@@ -6,16 +6,17 @@ import model.Order;
 import model.User;
 import service.CarService;
 import service.OrderService;
-import service.UserService;
 import utils.Validations;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.NoSuchElementException;
 
 public class CarOrder implements Command {
+	static final Logger LOGGER = Logger.getLogger(CarOrder.class);
     private final CarService carService;
     private final OrderService orderService;
     
@@ -36,7 +37,7 @@ public class CarOrder implements Command {
                         carService.findCarById(carId).orElseThrow(NoSuchElementException::new));
 
             } catch (Exception e) {
-            	System.out.println("CarOrder: execute: exception");
+            	LOGGER.error("Failed to load a car info");
                 e.printStackTrace();
                 return "redirect:/error";
             }
@@ -70,10 +71,12 @@ public class CarOrder implements Command {
 
             request.setAttribute("carToOrder", receivedCar);
         } catch (Exception e) {
+        	LOGGER.error("Failed to make a car order");
             e.printStackTrace();
             return "redirect:/error";
 
         }
+        LOGGER.error("Successfully made a car order");
         return "WEB-INF/carOrder.jsp";
 
     }

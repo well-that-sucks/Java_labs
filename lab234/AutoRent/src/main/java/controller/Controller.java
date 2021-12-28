@@ -18,8 +18,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 @WebServlet(name = "ControllerServlet", urlPatterns = "/")
 public class Controller extends HttpServlet {
+	static final Logger LOGGER = Logger.getLogger(Controller.class);
+	
     private Map<String, Command> commands = new HashMap<>();
     private UserService userService = new UserService();
     private CarService carService = new CarService();
@@ -30,7 +34,7 @@ public class Controller extends HttpServlet {
     @Override
     public void init(ServletConfig servletConfig) {
         servletConfig.getServletContext().setAttribute("loggedUsers", new HashSet<String>());
-
+        LOGGER.info("Logger has been initialized!");
         commands.put("/", (req) -> "/login.jsp");
         commands.put("/registration", new Registration(userService));
         commands.put("/login", new Login(userService));
@@ -59,7 +63,8 @@ public class Controller extends HttpServlet {
     }
 
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getRequestURI();
+    	String path = request.getRequestURI();
+    	LOGGER.info("Someone accessed " + path);
         Command command = commands.get(path);
         String page = command.execute(request);
         if (page.contains("redirect:")) {

@@ -6,10 +6,14 @@ import model.Status;
 import service.CarService;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public class CarUpdate implements Command {
+	static final Logger LOGGER = Logger.getLogger(CarUpdate.class);
     private final CarService carService;
 
     public CarUpdate(CarService carService) {
@@ -48,10 +52,11 @@ public class CarUpdate implements Command {
             request.setAttribute("allStatuses", List.of(Status.READY.name(), Status.REPAIR.name()));
             request.setAttribute("carToUpdate", receivedCar);
         } catch (Exception e) {
+        	LOGGER.error("Failed to update a car");
             e.printStackTrace();
             return "redirect:/error";
         }
-
+        LOGGER.error("Successfully updated a car");
         return "WEB-INF/carUpdate.jsp";
     }
 }

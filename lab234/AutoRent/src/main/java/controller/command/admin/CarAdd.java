@@ -6,8 +6,12 @@ import service.CarService;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 
 public class CarAdd implements Command {
+	
+	static final Logger LOGGER = Logger.getLogger(CarAdd.class);
 
     private final CarService carService;
 
@@ -30,9 +34,11 @@ public class CarAdd implements Command {
         try {
             carService.addCar(car);
         } catch (Exception e) {
+        	LOGGER.error("Failed to add new car to DB");
             e.printStackTrace();
             return "redirect:/carAdd";
         }
+        LOGGER.info("Successfully added new car to DB");
         return "redirect:/carAdd";
     }
 }

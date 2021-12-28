@@ -5,10 +5,13 @@ import service.UserService;
 import utils.Validations;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
 import java.util.Optional;
 
 public class Registration implements Command {
-
+	static final Logger LOGGER = Logger.getLogger(Registration.class);
     private final UserService userService;
 
     public Registration(UserService userService) {
@@ -40,9 +43,11 @@ public class Registration implements Command {
             }
 
         } catch (Exception e) {
+        	LOGGER.error("An error occured during executing registration command");
             e.printStackTrace();
             return "redirect:/registration";
         }
+        LOGGER.info("Successfully executed registration command");
         return "redirect:/login";
     }
 }

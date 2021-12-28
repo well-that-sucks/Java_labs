@@ -2,13 +2,17 @@ package controller.command;
 
 import model.User;
 import service.UserService;
-import utils.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Login implements Command {
+	static final Logger LOGGER = Logger.getLogger(Login.class);
+	
     private final UserService userService;
 
     public Login(UserService userService) {
@@ -29,6 +33,7 @@ public class Login implements Command {
                 boolean correctPass = userService.checkPasswordMatching(request.getParameter("password"), user.get());
                 if (user.isPresent() && correctPass) {
                     CommandSecurity.addUserSession(request, user.get());
+                    LOGGER.info("Successfully executed login command");
                     return "redirect:/home";
                 }
 
@@ -47,6 +52,7 @@ public class Login implements Command {
             request.setAttribute("wrongUserName", "Username not found");
             return "WEB-INF/login.jsp";
         } catch (Exception e) {
+        	LOGGER.error("An error occured during executing login command");
             e.printStackTrace();
             return "WEB-INF/login.jsp";
         }
